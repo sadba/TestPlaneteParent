@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".TransfertActivity">
+
+    <android.support.v7.widget.Toolbar
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimaryDark"
+        app:layout_collapseMode="pin"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:id="@+id/toolbarAgents"
+        >
+
+
+
+    </android.support.v7.widget.Toolbar>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:paddingTop="10dp"
+            android:paddingRight="10dp"
+            android:paddingLeft="10dp"
+            android:paddingBottom="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <fr.ganfra.materialspinner.MaterialSpinner
+                android:id="@+id/spinnerCycle"
+                app:ms_floatingLabelText="Selectionnez un cycle"
+                app:ms_floatingLabelColor="@color/colorPrimary"
+                app:ms_hint="Veuillez choisir un cycle"
+                app:ms_multiline="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+
+
+            <fr.ganfra.materialspinner.MaterialSpinner
+                android:id="@+id/spinnerIa"
+                android:visibility="gone"
+                app:ms_floatingLabelText="Selectionnez une région"
+                app:ms_floatingLabelColor="@color/colorPrimary"
+                app:ms_hint="Veuillez choisir une région"
+                app:ms_multiline="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+
+            <fr.ganfra.materialspinner.MaterialSpinner
+                android:id="@+id/spinnerIef"
+                android:visibility="gone"
+                app:ms_floatingLabelText="Selectionnez un département"
+                app:ms_floatingLabelColor="@color/colorPrimary"
+                app:ms_hint="Veuillez choisir un département"
+                app:ms_multiline="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <fr.ganfra.materialspinner.MaterialSpinner
+                android:id="@+id/spinnerCommune"
+                android:visibility="gone"
+                app:ms_floatingLabelText="Selectionnez une commune"
+                app:ms_floatingLabelColor="@color/colorPrimary"
+                app:ms_hint="Veuillez choisir une commune"
+                app:ms_multiline="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <fr.ganfra.materialspinner.MaterialSpinner
+                android:id="@+id/spinnerEtab"
+                android:visibility="gone"
+                app:ms_floatingLabelText="Selectionnez un etablissement"
+                app:ms_floatingLabelColor="@color/colorPrimary"
+                app:ms_hint="Veuillez choisir un etablissement"
+                app:ms_multiline="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <fr.ganfra.materialspinner.MaterialSpinner
+                android:id="@+id/spinnerComm2"
+                android:visibility="gone"
+                app:ms_floatingLabelText="Selectionnez une commune"
+                app:ms_floatingLabelColor="@color/colorPrimary"
+                app:ms_hint="Veuillez choisir une commune"
+                app:ms_multiline="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <fr.ganfra.materialspinner.MaterialSpinner
+                android:id="@+id/spinnerEtab2"
+                android:visibility="gone"
+                app:ms_floatingLabelText="Selectionnez  etablissement 2"
+                app:ms_floatingLabelColor="@color/colorPrimary"
+                app:ms_hint="Veuillez choisir un deuxieme etablissement"
+                app:ms_multiline="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <fr.ganfra.materialspinner.MaterialSpinner
+                android:id="@+id/spinnerComm3"
+                android:visibility="gone"
+                app:ms_floatingLabelText="Selectionnez  une commune"
+                app:ms_floatingLabelColor="@color/colorPrimary"
+                app:ms_hint="Veuillez choisir une commune"
+                app:ms_multiline="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+
+            <fr.ganfra.materialspinner.MaterialSpinner
+                android:id="@+id/spinnerEtab3"
+                android:visibility="gone"
+                app:ms_floatingLabelText="Selectionnez  etablissement 3"
+                app:ms_floatingLabelColor="@color/colorPrimary"
+                app:ms_hint="Veuillez choisir un troisieme etablissement"
+                app:ms_multiline="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <EditText
+                android:background="@drawable/border"
+                android:layout_margin="16dp"
+                android:id="@+id/edt_email"
+                android:hint="Motif du transfert"
+                android:maxLength="100"
+                android:inputType="textEmailAddress"
+                android:layout_width="match_parent"
+                android:layout_height="80dp" />
+
+
+
+
+
+
+
+
+            <Button
+                android:id="@+id/btn_transfert"
+                style="?android:textAppearanceSmall"
+                android:text="Valider Transfert"
+                android:background="@drawable/blue_button_bg"
+                android:textStyle="bold"
+                android:textColor="#fff"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="60dp" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</LinearLayout>

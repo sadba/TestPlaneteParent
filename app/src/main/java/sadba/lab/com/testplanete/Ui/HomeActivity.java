@@ -110,6 +110,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 Enfant enfantsClick = (Enfant) adapterView.getItemAtPosition(i);
                 ien = enfantsClick.getIen_eleve();
+                Toast.makeText(HomeActivity.this, ien, Toast.LENGTH_SHORT).show();
                 String code_classe = enfantsClick.getId_etablissement();
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 SharedPreferences.Editor editor = preferences.edit();

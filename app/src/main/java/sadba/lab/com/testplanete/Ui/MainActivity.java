@@ -259,8 +259,9 @@ public class MainActivity extends AppCompatActivity {
                         // realm = Realm.getDefaultInstance();
                         //Toast.makeText(HomeActivity.this, String.valueOf(bulletins.size()), Toast.LENGTH_SHORT).show();
 
+
                         try{
-                            realm = Realm.getDefaultInstance();
+
                             realm.executeTransaction(realm1 -> {
                                 for (Enfant enfant: enfants){
                                     Enfant enfant1 = new Enfant();
@@ -286,9 +287,10 @@ public class MainActivity extends AppCompatActivity {
                                     //realm.close();
                                 }
                             });
-                        } catch (Exception e){
-                            //Toast.makeText(HomeActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                            //realm.close();
+                        } finally {
+                            if (realm != null) {
+                                realm.close();
+                            }
                         }
 
 
@@ -426,9 +428,7 @@ public class MainActivity extends AppCompatActivity {
                         if (result.getCode().equals("1")) {
                             Toast.makeText(MainActivity.this, result.getMessage(), Toast.LENGTH_LONG).show();
                         } else {
-                            final android.app.AlertDialog watingDialog = new SpotsDialog(MainActivity.this);
-                            watingDialog.show();
-                            watingDialog.setTitle("En cours...");
+
                             gotToHomeActivity();
                             sp.edit().putBoolean("logged", true).apply();
                             Realm mRealm = null;

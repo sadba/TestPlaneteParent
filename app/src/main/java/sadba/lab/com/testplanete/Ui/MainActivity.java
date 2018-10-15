@@ -23,6 +23,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
+import io.realm.RealmResults;
+import io.realm.exceptions.RealmPrimaryKeyConstraintException;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -49,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     SharedPreferences sp1;
     IMyAPI mService;
     Realm realm;
+    private VerifUser verifUsers;
     //private String ien;
     //final String ien = null;
 
@@ -60,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         //Init Service
         mService = Common.getAPI();
 
-        Realm.init(this);
+
 
         //getEnfants();
 
@@ -113,7 +116,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+
+
     }
+
+
 
 
 
@@ -168,20 +175,44 @@ public class MainActivity extends AppCompatActivity {
                                                 Toast.makeText(MainActivity.this, result.getMessage(), Toast.LENGTH_LONG).show();
                                                 watingDialog.dismiss();
                                             } else {
-                                                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                                                SharedPreferences.Editor editor = preferences.edit();
-                                                editor.putString("ien_Parent", result.getIen_parent());
-                                                editor.apply();
+
                                                 alertDialog.dismiss();
                                                 watingDialog.dismiss();
-                                                // VerifUser verifUser = new VerifUser();
-                                                // realm = Realm.getDefaultInstance();
-                                                //realm.copyToRealmOrUpdate(verifUser);
-                                                realm = Realm.getDefaultInstance();
-                                                realm.beginTransaction();
-                                                realm.copyToRealm(response.body());
-                                                realm.commitTransaction();
-                                                showRegisterDialog();
+
+                                                Realm mRealm = null;
+                                                try{
+                                                    mRealm = Realm.getDefaultInstance();
+                                                    final Realm finalMRealm = mRealm;
+                                                    mRealm.executeTransaction(new Realm.Transaction() {
+                                                        @Override
+                                                        public void execute(Realm realm) {
+                                                            try{
+                                                                VerifUser verifUser = new VerifUser();
+                                                                verifUser.setCode(result.getCode());
+                                                                verifUser.setMessage(result.getMessage());
+                                                                verifUser.setIen_parent(result.getIen_parent());
+                                                                verifUser.setNom_parent(result.getNom_parent());
+                                                                verifUser.setNombre_enfants(result.getNombre_enfants());
+                                                                verifUser.setPrenom_parent(result.getPrenom_parent());
+                                                                verifUser.setType_affiliation(result.getType_affiliation());
+
+                                                                finalMRealm.copyToRealm(verifUser);
+
+                                                                showRegisterDialog();
+
+                                                                getEnfants();
+
+                                                            } catch (RealmPrimaryKeyConstraintException e){
+                                                                Toast.makeText(getApplicationContext(), "Primary Key exists, Press Update instead", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        }
+                                                    });
+                                                } finally {
+                                                    if (mRealm != null) {
+                                                        mRealm.close();
+                                                    }
+                                                }
+
                                             }
 
                                         }
@@ -207,6 +238,72 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         alertDialog.show();
+    }
+
+    private void getEnfants() {
+        //SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        //String value = sharedPreferences.getString("ien_parent", "");
+        realm = Realm.getDefaultInstance();
+        verifUsers = realm.where(VerifUser.class).findFirst();
+        String value = verifUsers.getIen_parent();
+        //Toast.makeText(this, value, Toast.LENGTH_SHORT).show();
+        realm.close();
+
+        IMyAPI service = ApiClient.getRetrofit().create(IMyAPI.class);
+        service.getEnfants(value)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DisposableObserver<List<Enfant>>() {
+                    @Override
+                    public void onNext(List<Enfant> enfants) {
+                        // realm = Realm.getDefaultInstance();
+                        //Toast.makeText(HomeActivity.this, String.valueOf(bulletins.size()), Toast.LENGTH_SHORT).show();
+
+                        try{
+                            realm = Realm.getDefaultInstance();
+                            realm.executeTransaction(realm1 -> {
+                                for (Enfant enfant: enfants){
+                                    Enfant enfant1 = new Enfant();
+                                    enfant1.setCode(enfant.getCode());
+                                    enfant1.setMessage(enfant.getMessage());
+                                    enfant1.setType_affiliation(enfant.getType_affiliation());
+                                    enfant1.setDate_naiss_eleve(enfant.getDate_naiss_eleve());
+                                    enfant1.setSexe_eleve(enfant.getSexe_eleve());
+                                    enfant1.setPrenom_eleve(enfant.getPrenom_eleve());
+                                    enfant1.setNom_eleve(enfant.getNom_eleve());
+                                    enfant1.setLieu_naiss_eleve(enfant.getLieu_naiss_eleve());
+                                    enfant1.setLibelle_etablissement(enfant.getLibelle_etablissement());
+                                    enfant1.setLibelle_cycle(enfant.getLibelle_cycle());
+                                    enfant1.setIen_eleve(enfant.getIen_eleve());
+                                    enfant1.setId_parent(enfant.getId_parent());
+                                    enfant1.setId_niveau(enfant.getId_niveau());
+                                    enfant1.setId_etablissement(enfant.getId_etablissement());
+                                    enfant1.setId_cycle(enfant.getId_cycle());
+                                    enfant1.setLibelle_niveau(enfant.getLibelle_niveau());
+
+
+                                    realm.copyToRealmOrUpdate(enfant1);
+                                    //realm.close();
+                                }
+                            });
+                        } catch (Exception e){
+                            //Toast.makeText(HomeActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                            //realm.close();
+                        }
+
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 
     private void showRegisterDialog() {
@@ -329,12 +426,39 @@ public class MainActivity extends AppCompatActivity {
                         if (result.getCode().equals("1")) {
                             Toast.makeText(MainActivity.this, result.getMessage(), Toast.LENGTH_LONG).show();
                         } else {
+                            final android.app.AlertDialog watingDialog = new SpotsDialog(MainActivity.this);
+                            watingDialog.show();
+                            watingDialog.setTitle("En cours...");
                             gotToHomeActivity();
                             sp.edit().putBoolean("logged", true).apply();
-                            realm = Realm.getDefaultInstance();
-                            realm.beginTransaction();
-                            realm.copyToRealm(response.body());
-                            realm.commitTransaction();
+                            Realm mRealm = null;
+                            try{
+                                mRealm = Realm.getDefaultInstance();
+                                final Realm finalMRealm = mRealm;
+                                mRealm.executeTransaction(new Realm.Transaction() {
+                                    @Override
+                                    public void execute(Realm realm) {
+                                        try{
+                                            User user = new User();
+                                           user.setCode(result.getCode());
+                                           user.setIen(result.getIen());
+                                           user.setMessage(result.getMessage());
+                                            finalMRealm.copyToRealm(user);
+
+                                            showRegisterDialog();
+
+                                            getEnfants();
+
+                                        } catch (RealmPrimaryKeyConstraintException e){
+                                            Toast.makeText(getApplicationContext(), "Primary Key exists, Press Update instead", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                            } finally {
+                                if (mRealm != null) {
+                                    mRealm.close();
+                                }
+                            }
 
                         }
 
@@ -351,5 +475,13 @@ public class MainActivity extends AppCompatActivity {
     private boolean isPasswordValid(String password) {
 
         return password.length() >= 6;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (realm != null) {
+            realm.close();
+        }
     }
 }

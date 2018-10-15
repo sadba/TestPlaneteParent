@@ -47,7 +47,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     private String ien;
     android.support.v7.widget.Toolbar toolbar;
-    private Realm realm;
+     Realm realm;
     private CardView tempsCard, notesCard, evalCard, infosCard, abscenceCard;
     private List<Enfant>enfantsSpinner = new ArrayList<>();
     private RealmResults<Enfant> resultsEnfants;
@@ -60,7 +60,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         Realm.init(getApplicationContext());
         realm = Realm.getDefaultInstance();
 
-        getEnfants();
+        //getEnfants();
 
         tempsCard = findViewById(R.id.temps_card);
         notesCard = findViewById(R.id.notes_card);
@@ -124,70 +124,13 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
+        realm.close();
+
 
     }
 
 
-    private void getEnfants() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String value = sharedPreferences.getString("ien_parent", "");
-        Toast.makeText(this, value, Toast.LENGTH_SHORT).show();
-        IMyAPI service = ApiClient.getRetrofit().create(IMyAPI.class);
-        service.getEnfants(value)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(new DisposableObserver<List<Enfant>>() {
-                    @Override
-                    public void onNext(List<Enfant> enfants) {
-                        // realm = Realm.getDefaultInstance();
-                        //Toast.makeText(HomeActivity.this, String.valueOf(bulletins.size()), Toast.LENGTH_SHORT).show();
 
-                        try{
-                            realm = Realm.getDefaultInstance();
-                            realm.executeTransaction(realm1 -> {
-                                for (Enfant enfant: enfants){
-                                    Enfant enfant1 = new Enfant();
-                                    enfant1.setCode(enfant.getCode());
-                                    enfant1.setMessage(enfant.getMessage());
-                                    enfant1.setType_affiliation(enfant.getType_affiliation());
-                                    enfant1.setDate_naiss_eleve(enfant.getDate_naiss_eleve());
-                                    enfant1.setSexe_eleve(enfant.getSexe_eleve());
-                                    enfant1.setPrenom_eleve(enfant.getPrenom_eleve());
-                                    enfant1.setNom_eleve(enfant.getNom_eleve());
-                                    enfant1.setLieu_naiss_eleve(enfant.getLieu_naiss_eleve());
-                                    enfant1.setLibelle_etablissement(enfant.getLibelle_etablissement());
-                                    enfant1.setLibelle_cycle(enfant.getLibelle_cycle());
-                                    enfant1.setIen_eleve(enfant.getIen_eleve());
-                                    enfant1.setId_parent(enfant.getId_parent());
-                                    enfant1.setId_niveau(enfant.getId_niveau());
-                                    enfant1.setId_etablissement(enfant.getId_etablissement());
-                                    enfant1.setId_cycle(enfant.getId_cycle());
-                                    enfant1.setLibelle_niveau(enfant.getLibelle_niveau());
-
-
-                                    realm.copyToRealmOrUpdate(enfant1);
-                                    //realm.close();
-                                }
-                            });
-                        } catch (Exception e){
-                            //Toast.makeText(HomeActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                            //realm.close();
-                        }
-
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {

@@ -31,6 +31,7 @@ import io.realm.RealmResults;
 import sadba.lab.com.testplanete.AbscenceActivity;
 import sadba.lab.com.testplanete.Adapter.EnfantSpinnerAdapter;
 import sadba.lab.com.testplanete.EmploiActivity;
+import sadba.lab.com.testplanete.EnseignantsActivity;
 import sadba.lab.com.testplanete.EvalActivity;
 import sadba.lab.com.testplanete.InfoEtabActivity;
 import sadba.lab.com.testplanete.Model.Bulletin;
@@ -101,6 +102,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         realm = Realm.getDefaultInstance();
         resultsEnfants = realm.where(Enfant.class).findAll();
         enfantsSpinner = realm.copyFromRealm(resultsEnfants);
+        Toast.makeText(this, enfantsSpinner.toString(), Toast.LENGTH_SHORT).show();
         //realm.close();
        // Toast.makeText(this, String.valueOf(enfantsSpinner.size()), Toast.LENGTH_LONG).show();
         EnfantSpinnerAdapter enfantSpinnerAdapter = new EnfantSpinnerAdapter(getApplicationContext(), R.layout.enfants_item, enfantsSpinner);
@@ -110,7 +112,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 Enfant enfantsClick = (Enfant) adapterView.getItemAtPosition(i);
                 ien = enfantsClick.getIen_eleve();
-                Toast.makeText(HomeActivity.this, ien, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(HomeActivity.this, ien, Toast.LENGTH_SHORT).show();
                 String code_classe = enfantsClick.getId_etablissement();
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 SharedPreferences.Editor editor = preferences.edit();
@@ -127,10 +129,55 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         realm.close();
 
+        getBulletins();
+
 
     }
 
+    private void getBulletins() {
+        //realm = Realm.getDefaultInstance();
+        IMyAPI service = ApiClient.getRetrofit1().create(IMyAPI.class);
+        service.getBulletins(ien)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DisposableObserver<List<Bulletin>>() {
+                    @Override
+                    public void onNext(List<Bulletin> bulletins) {
+                        // realm = Realm.getDefaultInstance();
+                        //Toast.makeText(HomeActivity.this, String.valueOf(bulletins.size()), Toast.LENGTH_SHORT).show();
 
+                        try{
+                            realm = Realm.getDefaultInstance();
+                            realm.executeTransaction(realm1 -> {
+                                for (Bulletin bulletin: bulletins){
+                                    Bulletin bulletin1 = new Bulletin();
+                                    bulletin1.setId_semestre(bulletin.getId_semestre());
+                                    bulletin1.setChemin_bulletin(bulletin.getChemin_bulletin());
+                                    bulletin1.setLibelle_semestre(bulletin.getLibelle_semestre());
+
+
+                                    realm.copyToRealmOrUpdate(bulletin1);
+                                }
+                            });
+                        } catch (Exception e){
+                            //Toast.makeText(HomeActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                            realm.close();
+                        }
+
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        //Toast.makeText(getApplicationContext(), "Veuillez vérifier votre connection internet3", Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
 
 
     @Override
@@ -149,8 +196,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         } else if (id == R.id.nav_slideshow) {
             // Handle the camera action
-            //Intent intent = new Intent(this, EnseignantsActivity.class);
-            //startActivity(intent);
+            Intent intent = new Intent(this, EnseignantsActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_manage) {
 
@@ -200,6 +247,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(i);
                 break;
             default: break;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (realm != null) {
+            realm.close();
         }
     }
 }

@@ -33,6 +33,8 @@ public class Temps extends RealmObject {
     private String jour_planning;
     @SerializedName("num_jour")
     private String num_jour;
+    @SerializedName("ien_eleve")
+    private String ien_eleve;
 
     public String getId_planing_horaire() {
         return id_planing_horaire;
@@ -40,6 +42,14 @@ public class Temps extends RealmObject {
 
     public void setId_planing_horaire(String id_planing_horaire) {
         this.id_planing_horaire = id_planing_horaire;
+    }
+
+    public String getIen_eleve() {
+        return ien_eleve;
+    }
+
+    public void setIen_eleve(String ien_eleve) {
+        this.ien_eleve = ien_eleve;
     }
 
     public String getHeure_debut() {

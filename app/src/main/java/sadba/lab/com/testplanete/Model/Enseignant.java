@@ -12,9 +12,12 @@ public class Enseignant extends RealmObject{
     @SerializedName("id_enseignant")
     @Expose
     private String id_enseignant;
-    @SerializedName("ien_enseignant")
+    @SerializedName("ien_ens")
     @Expose
-    private String ien_enseignant;
+    private String ien_ens;
+    @SerializedName("ien_eleve")
+    @Expose
+    private String ien_eleve;
     @SerializedName("nom_complet")
     @Expose
     private String nom_complet;
@@ -34,12 +37,20 @@ public class Enseignant extends RealmObject{
         this.id_enseignant = id_enseignant;
     }
 
-    public String getIen_enseignant() {
-        return ien_enseignant;
+    public String getIen_ens() {
+        return ien_ens;
     }
 
-    public void setIen_enseignant(String ien_enseignant) {
-        this.ien_enseignant = ien_enseignant;
+    public void setIen_ens(String ien_ens) {
+        this.ien_ens = ien_ens;
+    }
+
+    public String getIen_eleve() {
+        return ien_eleve;
+    }
+
+    public void setIen_eleve(String ien_eleve) {
+        this.ien_eleve = ien_eleve;
     }
 
     public String getNom_complet() {

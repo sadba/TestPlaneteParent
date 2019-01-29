@@ -26,7 +26,8 @@
         <activity android:name=".EvalActivity" />
         <activity android:name=".InfoEtabActivity" />
         <activity android:name=".AbscenceActivity" />
-        <activity android:name=".TransfertActivity"></activity>
+        <activity android:name=".TransfertActivity" />
+        <activity android:name=".EnseignantsActivity"></activity>
     </application>
 
 </manifest>

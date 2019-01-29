@@ -67,6 +67,9 @@ public interface IMyAPI {
     @GET("planning-eleve/index.php")
     Observable<List<Temps>> getTemps(@Query("ien") String ien);
 
+    @GET("planning-eleve/index.php")
+    Observable<List<Temps>> getTempsJour(@Query("ien") String ien, @Query("jour") String jour);
+
     @GET("notes_eleve/index.php")
     Observable<List<Note>> getNotes(@Query("ien") String ien);
 

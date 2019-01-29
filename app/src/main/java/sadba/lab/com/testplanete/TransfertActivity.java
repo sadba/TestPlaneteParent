@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,6 +54,7 @@ public class TransfertActivity extends AppCompatActivity {
     private String school1;
     private String school2;
     private String type;
+    EditText editText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +63,8 @@ public class TransfertActivity extends AppCompatActivity {
 
         toolbar =  findViewById(R.id.toolbarAgents);
         toolbar.setTitle("Demande de transfert");
+
+        editText = findViewById(R.id.edt_email);
 
         getCycles();
 
@@ -307,10 +311,10 @@ public class TransfertActivity extends AppCompatActivity {
                         final Spinner spinnerRegion = findViewById(R.id.spinnerIa);
                         final Spinner spinnerDepartement = findViewById(R.id.spinnerIef);
                         final Spinner spinnerComm2 = findViewById(R.id.spinnerComm2);
-                        spinnerCycle.setVisibility(View.INVISIBLE);
+                        spinnerCycle.setVisibility(View.GONE);
                         //spinnerIef.setVisibility(View.INVISIBLE);
-                        spinnerRegion.setVisibility(View.INVISIBLE);
-                        spinnerDepartement.setVisibility(View.INVISIBLE);
+                        spinnerRegion.setVisibility(View.GONE);
+                        spinnerDepartement.setVisibility(View.GONE);
                         spinnerComm2.setVisibility(View.VISIBLE);
                         getCommunes2(code_departement);
 

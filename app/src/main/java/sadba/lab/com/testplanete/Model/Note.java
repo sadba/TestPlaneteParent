@@ -24,7 +24,18 @@ public class Note extends RealmObject {
     @SerializedName("devoir")
     private String devoir;
 
+    @SerializedName("ien")
+    private String ien;
+
     public Note() {
+    }
+
+    public String getIen() {
+        return ien;
+    }
+
+    public void setIen(String ien) {
+        this.ien = ien;
     }
 
     public String getId_note() {

@@ -247,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
         verifUsers = realm.where(VerifUser.class).findFirst();
         String value = verifUsers.getIen_parent();
         //Toast.makeText(this, value, Toast.LENGTH_SHORT).show();
-        realm.close();
+        //realm.close();
 
         IMyAPI service = ApiClient.getRetrofit().create(IMyAPI.class);
         service.getEnfants(value)
@@ -287,10 +287,8 @@ public class MainActivity extends AppCompatActivity {
                                     //realm.close();
                                 }
                             });
-                        } finally {
-                            if (realm != null) {
-                                realm.close();
-                            }
+                        } catch (RealmPrimaryKeyConstraintException e){
+                            Toast.makeText(getApplicationContext(), "Primary Key exists, Press Update instead", Toast.LENGTH_SHORT).show();
                         }
 
 
